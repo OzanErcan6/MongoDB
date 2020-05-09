@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.0.0/stitch.js"></script>
+    <script>
+  
+      const client = stitch.Stitch.initializeDefaultAppClient("stitchapp0-bvwty");
+   
+      const mongodb = client.getServiceClient(
+        stitch.RemoteMongoClient.factory,
+        "mongodb-atlas"
+      );
+      // Get a reference to the blog database
+      const db = mongodb.db("blog");
+
+
+      function displayInventionsOnLoad() {
+        username = sessionStorage.getItem('currentUsername');
+        document.getElementById("username").innerHTML = username;
+        client.auth
+          .loginWithCredential(new stitch.AnonymousCredential())
+          .catch(console.error);
+
+         var inventionlist; 
+
+
+         db.collection("inventions")
+          .find({}, { limit: 1000 })
+          .asArray()
+          .then(docs => {
+            const html = docs.map(doc => `<div>${doc.name}</div>`);
+            document.getElementById("inventions").innerHTML = html;
+          })
+
+
+      }
+
+
+      function selectInvention() {
+            var Invention = document.getElementById("selected_invention");
+            sessionStorage.setItem('currentInvention', Invention.value)
+            document.location = 'invention.html'; 
+         }
+
+        
+      
+    </script>
+  </head>
+
+  <body onLoad="displayInventionsOnLoad()">
+    
+    <hr>
+
+    
+    <h3>Username :<div id="username"> </div> </h3>
+    
+    <h1>Gallery: </h1>
+    <div id="inventions"></div>
+
+    <hr>
+    Type an invention name for more info : <input id="selected_invention"><input type="submit" onClick="selectInvention()">
+    <hr>
+
+
+  </body>
+
+</html>

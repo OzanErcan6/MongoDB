@@ -1,0 +1,83 @@
+<html>
+  <head>
+    <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.0.0/stitch.js"></script>
+    <script>
+  
+      const client = stitch.Stitch.initializeDefaultAppClient("stitchapp0-bvwty");
+   
+      const mongodb = client.getServiceClient(
+        stitch.RemoteMongoClient.factory,
+        "mongodb-atlas"
+      );
+      // Get a reference to the blog database
+      const db = mongodb.db("blog");
+
+      function displayUsers() {
+        db.collection("users")
+          .find({}, { limit: 1000 })
+          .asArray()
+          .then(docs => {
+            const html = docs.map(doc => `<div>${doc.user}</div>`);
+            document.getElementById("users").innerHTML = html;
+          })
+      }
+
+      function displayUsersOnLoad() {
+        client.auth
+          .loginWithCredential(new stitch.AnonymousCredential())
+          .then(displayUsers)
+          .catch(console.error);
+      }
+
+      function addUser() {
+        const newUser = document.getElementById("new_user");
+        console.log("add user", client.auth.user.id)
+        db.collection("users")
+          .insertOne({ owner_id: client.auth.user.id, user: newUser.value })
+          .then(displayUsers);
+        newUser.value = "";
+      }
+      
+	  
+	function deleteUser() {
+            console.log("deleting a user");
+            db.collection("users").deleteOne({  user: delete_user.value })
+                .then(displayUsers);
+        }
+
+
+
+      function loginUser() {
+            var userList = document.getElementById("login_user");
+            sessionStorage.setItem('currentUsername', userList.value)
+            document.location = 'gallery.html'; 
+         }
+
+
+		
+    </script>
+  </head>
+
+  <body onLoad="displayUsersOnLoad()">
+    <h3>users</h3>
+    
+    <hr>
+
+    <div id="users"></div>
+    
+	
+    <hr>
+Add a User: <input id="new_user"><input type="submit" onClick="addUser()">
+<hr>
+Type name of an user to delete: <input id="delete_user"><input type="submit" onClick="deleteUser()">
+<hr>
+Type name of an user to Login: <input id="login_user"><input type="submit" onClick="loginUser()">
+<hr>
+
+
+
+
+  
+  </body>
+
+</html>

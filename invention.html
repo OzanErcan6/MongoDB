@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.0.0/stitch.js"></script>
+    <script>
+  
+      const client = stitch.Stitch.initializeDefaultAppClient("stitchapp0-bvwty");
+   
+      const mongodb = client.getServiceClient(
+        stitch.RemoteMongoClient.factory,
+        "mongodb-atlas"
+      );
+      // Get a reference to the blog database
+      const db = mongodb.db("blog");
+
+
+      function displayInventionsOnLoad() {
+
+        current_invention = sessionStorage.getItem('currentInvention');
+        document.getElementById("current_invention").innerHTML = current_invention;
+        client.auth
+          .loginWithCredential(new stitch.AnonymousCredential())
+          .catch(console.error);
+
+         var inventionlist; 
+
+
+         db.collection("inventions")
+          .find({name : current_invention})
+          .asArray()
+          .then(docs => {
+            const html = docs.map(doc => `
+            <img src =  ${doc.photo} width="200" height="200" >
+            <div>invention name : ${doc.name}</div>
+            <div>cost : ${doc.cost}</div>
+            <div>materials : ${doc.material}</div>
+            <div>inventor : ${doc.inventor}</div>
+            <div>rating : ${doc.rating}</div>
+            <div>optional1 : ${doc.optional1}</div>
+            <div>optional2 : ${doc.optional2}</div>
+            `
+            
+            );
+            document.getElementById("inventions").innerHTML = html;
+          })
+
+
+      }
+
+        
+      
+    </script>
+  </head>
+
+  <body onLoad="displayInventionsOnLoad()">
+    
+    <hr>
+
+    
+  <div id="current_invention"> </div> 
+    
+    <h1>Invention info: </h1>
+    <div id="inventions"></div>
+
+  
+  </body>
+
+</html>
