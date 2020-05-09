@@ -1,13 +1,9 @@
-# Keywords : Mongodb atlas , stitch , NoSQL , HTML
+DB -> mongoDB Atlas 
+Backend -> Stitch.
+Frontent -> HTML and javascript
 
-I used Mongodb atlas 
+An app for invention gallery
 
-For the backend i used stitch.
-
-For frontent i used html and javascript
-
-there are three html files for: index , gallery page and invention
-
+There are three html files for: index , gallery page and invention 
 you need to type user name and press submit button to go to the gallery page
-
 similarly type invention name to go to invention page
